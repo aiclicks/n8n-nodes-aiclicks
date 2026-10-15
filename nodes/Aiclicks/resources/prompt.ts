@@ -3,15 +3,36 @@ import {
 	commaSeparatedToArray,
 	daysField,
 	domainField,
+	limitField,
 	modelField,
 	operationSelector,
-	pageField,
-	pageSizeField,
+	returnAllField,
 	shownFor,
 } from '../shared/fields';
 
 const onAdd = shownFor('prompt', ['add']);
 const onGetMany = shownFor('prompt', ['getAll']);
+
+const maxPageSize = 500;
+
+const pageThroughAllPrompts = {
+	send: { paginate: '={{$value}}', type: 'query' as const, property: 'size', value: String(maxPageSize) },
+	operations: {
+		pagination: {
+			type: 'generic' as const,
+			properties: {
+				continue: '={{$response.body.data.page < $response.body.data.total_pages}}',
+				request: {
+					qs: {
+						domain_id: '={{$request.qs.domain_id}}',
+						size: '={{$request.qs.size}}',
+						page: '={{$response.body ? $response.body.data.page + 1 : 1}}',
+					},
+				},
+			},
+		},
+	},
+};
 
 export const promptDescription: INodeProperties[] = [
 	operationSelector('prompt', [
@@ -21,7 +42,6 @@ export const promptDescription: INodeProperties[] = [
 			action: 'Get many prompts',
 			description: 'List the prompts tracked for a domain',
 			url: '/api/v1/prompts',
-			isList: true,
 		},
 		{
 			name: 'Add',
@@ -62,8 +82,8 @@ export const promptDescription: INodeProperties[] = [
 	]),
 	domainField(shownFor('prompt', ['getAll', 'getStatistics', 'getFanoutQueries', 'getTags', 'getTopics'])),
 	domainField(onAdd, 'body'),
-	pageField(onGetMany),
-	pageSizeField(onGetMany, 'size'),
+	{ ...returnAllField(onGetMany), routing: pageThroughAllPrompts },
+	limitField(onGetMany, 'size', maxPageSize),
 	daysField(shownFor('prompt', ['getStatistics', 'getFanoutQueries'])),
 	modelField(shownFor('prompt', ['getFanoutQueries'])),
 	{

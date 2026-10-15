@@ -1,16 +1,7 @@
 import type { ILoadOptionsFunctions, INodeListSearchItems, INodeListSearchResult } from 'n8n-workflow';
-
-type Domain = { id: string; name: string; website: string; team_name?: string };
-
-type TeamGroup = { team_name: string; domains: Domain[] };
+import { flattenTeamGroups, type Domain, type TeamGroup } from '../shared/domains';
 
 type DomainsResponse = { data: { items: Array<Domain | TeamGroup> } };
-
-function flattenTeamGroups(items: Array<Domain | TeamGroup>): Domain[] {
-	return items.flatMap((item) =>
-		'domains' in item ? item.domains.map((domain) => ({ ...domain, team_name: item.team_name })) : [item],
-	);
-}
 
 function toSearchItem(domain: Domain): INodeListSearchItems {
 	const team = domain.team_name ? ` · ${domain.team_name}` : '';

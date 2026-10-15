@@ -22,7 +22,7 @@ Write operations (Domain → Create, Prompt → Add, Competitor → Add) need a 
 | Resource | Operations |
 |---|---|
 | Account | Validate Key |
-| Analytic | Get Visibility, Get Mentions, Get Citability, Get Citations Time Series, Get Citations, Get Brand Rankings, Get Model Leaderboard |
+| Brand Metric | Get Visibility, Get Mentions, Get Citability, Get Citations Time Series, Get Citations, Get Brand Rankings, Get Model Leaderboard |
 | ChatGPT Ad | Get KPIs, Get Leaderboard, Get Timeline, Get Prompts, Get Cards |
 | Competitor | Get Many, Add, Get Discovery, Get Time Series |
 | Domain | Get Many, Create |
@@ -32,9 +32,14 @@ Write operations (Domain → Create, Prompt → Add, Competitor → Add) need a 
 
 Most operations take a **Domain** (pick from the list or paste its ID) and **Days**, a trailing window of 1-365 days.
 
+- **Get Many** operations have **Return All** and **Limit**. Prompt → Get Many pages through every prompt when Return All is on.
+- List-shaped results (time series, citations, rankings, themes, GA4 breakdowns) come out as one n8n item per row, ready for Google Sheets or a Loop node. An empty result produces no items; turn on the node's **Always Output Data** setting if later steps must still run.
+- **Simplify** (on by default) trims wide responses (Get Citations, Competitor → Get Time Series) to their 10 most useful fields. Turn it off for the raw response.
+- With a master key, Domain → Get Many returns every domain across your teams, each tagged with `team_name`.
+
 ## Usage
 
-- **Weekly report:** Schedule Trigger → AIclicks (Analytic → Get Visibility) → Slack.
+- **Weekly report:** Schedule Trigger → AIclicks (Brand Metric → Get Visibility) → Slack.
 - **AI Agent:** add AIclicks as a tool on an AI Agent node, and let the agent pick the resource and operation.
 - New prompts and competitors can take up to about 30 minutes to appear in the AIclicks dashboard.
 

@@ -1,5 +1,12 @@
 import type { INodeProperties } from 'n8n-workflow';
-import { daysField, domainField, operationSelector, shownFor } from '../shared/fields';
+import {
+	daysField,
+	domainField,
+	operationSelector,
+	shownFor,
+	simplifyField,
+	simplifyTo,
+} from '../shared/fields';
 
 const operationsWithDays = [
 	'getVisibility',
@@ -46,6 +53,20 @@ export const analyticsDescription: INodeProperties[] = [
 			action: 'Get cited URLs',
 			description: 'URL-level citations across AI answers, sorted by frequency',
 			url: '/api/v1/citations',
+			postReceive: [
+				simplifyTo([
+					'url',
+					'domain',
+					'page_title',
+					'page_type',
+					'is_brand_owned',
+					'frequency',
+					'mentions',
+					'prompt_count',
+					'models',
+					'last_seen',
+				]),
+			],
 		},
 		{
 			name: 'Get Brand Rankings',
@@ -64,4 +85,5 @@ export const analyticsDescription: INodeProperties[] = [
 	]),
 	domainField({ show: { resource: ['analytics'] } }),
 	daysField(shownFor('analytics', operationsWithDays)),
+	simplifyField(shownFor('analytics', ['getCitations'])),
 ];

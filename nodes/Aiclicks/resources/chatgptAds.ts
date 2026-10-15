@@ -1,12 +1,5 @@
 import type { INodeProperties } from 'n8n-workflow';
-import {
-	daysField,
-	domainField,
-	operationSelector,
-	pageField,
-	pageSizeField,
-	shownFor,
-} from '../shared/fields';
+import { daysField, domainField, operationSelector, shownFor } from '../shared/fields';
 
 const onChatgptAds = { show: { resource: ['chatgptAds'] } };
 const onPaginated = shownFor('chatgptAds', ['getPrompts', 'getCards']);
@@ -51,6 +44,24 @@ export const chatgptAdsDescription: INodeProperties[] = [
 	]),
 	domainField(onChatgptAds),
 	daysField(onChatgptAds),
-	pageField(onPaginated),
-	pageSizeField(onPaginated, 'per_page'),
+	{
+		displayName: 'Page',
+		name: 'page',
+		type: 'number',
+		typeOptions: { minValue: 1 },
+		default: 1,
+		description: '1-based page number',
+		displayOptions: onPaginated,
+		routing: { send: { type: 'query', property: 'page' } },
+	},
+	{
+		displayName: 'Page Size',
+		name: 'pageSize',
+		type: 'number',
+		typeOptions: { minValue: 1, maxValue: 500 },
+		default: 50,
+		description: 'Rows per page (max 500)',
+		displayOptions: onPaginated,
+		routing: { send: { type: 'query', property: 'per_page' } },
+	},
 ];

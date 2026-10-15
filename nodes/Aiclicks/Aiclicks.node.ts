@@ -35,7 +35,7 @@ export class Aiclicks implements INodeType {
 				noDataExpression: true,
 				options: [
 					{ name: 'Account', value: 'account' },
-					{ name: 'Analytic', value: 'analytics' },
+					{ name: 'Brand Metric', value: 'analytics' },
 					{ name: 'ChatGPT Ad', value: 'chatgptAds' },
 					{ name: 'Competitor', value: 'competitor' },
 					{ name: 'Domain', value: 'domain' },

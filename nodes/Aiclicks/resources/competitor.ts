@@ -3,9 +3,13 @@ import {
 	commaSeparatedToArray,
 	daysField,
 	domainField,
+	limitField,
 	modelField,
 	operationSelector,
+	returnAllField,
 	shownFor,
+	simplifyField,
+	simplifyTo,
 } from '../shared/fields';
 
 const onAdd = shownFor('competitor', ['add']);
@@ -41,12 +45,29 @@ export const competitorDescription: INodeProperties[] = [
 			action: 'Get competitor time series',
 			description: 'Daily visibility, share of voice and position for the brand and each tracked competitor',
 			url: '/api/v1/competitor-time-series',
+			postReceive: [
+				simplifyTo([
+					'name',
+					'website',
+					'is_brand',
+					'avg_visibility',
+					'avg_sov',
+					'avg_position',
+					'avg_mentions',
+					'avg_sentiment',
+					'total_queries',
+					'series',
+				]),
+			],
 		},
 	]),
 	domainField(shownFor('competitor', ['getAll', 'getDiscovery', 'getTimeSeries'])),
 	domainField(onAdd, 'body'),
 	daysField(shownFor('competitor', ['getDiscovery', 'getTimeSeries'])),
 	modelField(shownFor('competitor', ['getTimeSeries'])),
+	simplifyField(shownFor('competitor', ['getTimeSeries'])),
+	returnAllField(onGetMany),
+	limitField(onGetMany),
 	{
 		displayName: 'Filters',
 		name: 'filters',

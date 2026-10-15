@@ -1,7 +1,9 @@
 import type { INodeProperties } from 'n8n-workflow';
-import { operationSelector, shownFor } from '../shared/fields';
+import { flattenDomainItems } from '../shared/domains';
+import { limitField, operationSelector, returnAllField, shownFor } from '../shared/fields';
 
 const onCreate = shownFor('domain', ['create']);
+const onGetMany = shownFor('domain', ['getAll']);
 
 export const domainDescription: INodeProperties[] = [
 	operationSelector('domain', [
@@ -11,7 +13,7 @@ export const domainDescription: INodeProperties[] = [
 			action: 'Get many domains',
 			description: 'List every domain (brand) the API key can read',
 			url: '/api/v1/domains',
-			isList: true,
+			postReceive: [flattenDomainItems],
 		},
 		{
 			name: 'Create',
@@ -22,6 +24,8 @@ export const domainDescription: INodeProperties[] = [
 			method: 'POST',
 		},
 	]),
+	returnAllField(onGetMany),
+	limitField(onGetMany),
 	{
 		displayName: 'Team ID',
 		name: 'teamId',

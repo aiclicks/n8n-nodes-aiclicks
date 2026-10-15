@@ -1,4 +1,11 @@
-import type { IDisplayOptions, INodeProperties, INodePropertyOptions } from 'n8n-workflow';
+import type {
+	IDataObject,
+	IDisplayOptions,
+	INodeExecutionData,
+	INodeProperties,
+	INodePropertyOptions,
+	PostReceiveAction,
+} from 'n8n-workflow';
 
 export type Operation = {
 	name: string;
@@ -7,18 +14,76 @@ export type Operation = {
 	description: string;
 	url: string;
 	method?: 'GET' | 'POST';
-	isList?: boolean;
+	postReceive?: PostReceiveAction[];
 };
 
-const unwrapData = { type: 'rootProperty' as const, properties: { property: 'data' } };
-const splitItems = { type: 'rootProperty' as const, properties: { property: 'items' } };
+export function rowsOf(data: IDataObject | IDataObject[]): IDataObject[] {
+	if (Array.isArray(data)) return data;
+	return Array.isArray(data.items) ? (data.items as IDataObject[]) : [data];
+}
 
-function toOptionWithRouting({ url, method = 'GET', isList, ...option }: Operation): INodePropertyOptions {
+export async function unwrapData(items: INodeExecutionData[]): Promise<INodeExecutionData[]> {
+	return items.flatMap(({ json }) => rowsOf(json.data as IDataObject).map((row) => ({ json: row })));
+}
+
+function toOptionWithRouting({
+	url,
+	method = 'GET',
+	postReceive = [],
+	...option
+}: Operation): INodePropertyOptions {
 	return {
 		...option,
 		routing: {
 			request: { method, url },
-			output: { postReceive: isList ? [unwrapData, splitItems] : [unwrapData] },
+			output: { postReceive: [unwrapData, ...postReceive] },
+		},
+	};
+}
+
+export function simplifyTo(fields: string[]): PostReceiveAction {
+	const pickedFields = Object.fromEntries(fields.map((field) => [field, `={{$responseItem.${field}}}`]));
+	return { type: 'setKeyValue', enabled: '={{$parameter.simplify}}', properties: pickedFields };
+}
+
+export function simplifyField(displayOptions: IDisplayOptions): INodeProperties {
+	return {
+		displayName: 'Simplify',
+		name: 'simplify',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to return a simplified version of the response instead of the raw data',
+		displayOptions,
+	};
+}
+
+export function returnAllField(displayOptions: IDisplayOptions): INodeProperties {
+	return {
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+		displayOptions,
+	};
+}
+
+export function limitField(
+	displayOptions: IDisplayOptions,
+	sendAs?: string,
+	maxValue?: number,
+): INodeProperties {
+	return {
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		typeOptions: { minValue: 1, maxValue },
+		default: 50,
+		description: 'Max number of results to return',
+		displayOptions: { show: { ...displayOptions.show, returnAll: [false] } },
+		routing: {
+			send: sendAs ? { type: 'query', property: sendAs } : undefined,
+			output: { maxResults: '={{$value}}' },
 		},
 	};
 }
@@ -95,32 +160,6 @@ export function modelField(displayOptions: IDisplayOptions): INodeProperties {
 		description: 'Restrict to one AI channel by name (ChatGPT, Perplexity, Gemini, AI Overviews, Claude, ...) or "all"',
 		displayOptions,
 		routing: { send: { type: 'query', property: 'model' } },
-	};
-}
-
-export function pageField(displayOptions: IDisplayOptions): INodeProperties {
-	return {
-		displayName: 'Page',
-		name: 'page',
-		type: 'number',
-		typeOptions: { minValue: 1 },
-		default: 1,
-		description: '1-based page number',
-		displayOptions,
-		routing: { send: { type: 'query', property: 'page' } },
-	};
-}
-
-export function pageSizeField(displayOptions: IDisplayOptions, property: string): INodeProperties {
-	return {
-		displayName: 'Page Size',
-		name: 'pageSize',
-		type: 'number',
-		typeOptions: { minValue: 1, maxValue: 500 },
-		default: 50,
-		description: 'Rows per page (max 500)',
-		displayOptions,
-		routing: { send: { type: 'query', property } },
 	};
 }
 
