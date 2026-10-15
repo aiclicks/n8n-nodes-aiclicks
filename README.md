@@ -46,6 +46,7 @@ Most operations take a **Domain** (pick from the list or paste its ID) and **Day
 ## Resources
 
 - [AIclicks](https://aiclicks.io)
+- [AIclicks API documentation](https://docs.aiclicks.io)
 - [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
 
 ## Version history
