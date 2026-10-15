@@ -1,0 +1,54 @@
+{
+	"name": "n8n-nodes-aiclicks",
+	"version": "0.1.0",
+	"description": "n8n node for aiclicks: brand visibility, citations, sentiment and AI traffic across AI search engines",
+	"license": "MIT",
+	"homepage": "https://aiclicks.io",
+	"keywords": [
+		"n8n-community-node-package",
+		"aiclicks",
+		"ai-visibility",
+		"geo",
+		"llm-seo"
+	],
+	"author": {
+		"name": "aiclicks",
+		"email": "stephen@aiclicks.io"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/aiclicks/n8n-nodes-aiclicks.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/AiclicksApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Aiclicks/Aiclicks.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.52.4",
+		"eslint": "9.32.0",
+		"prettier": "3.6.2",
+		"release-it": "^21.1.0",
+		"typescript": "5.9.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

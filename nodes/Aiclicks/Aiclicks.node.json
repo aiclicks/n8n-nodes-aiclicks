@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-aiclicks",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Analytics", "Marketing & Content"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/aiclicks/n8n-nodes-aiclicks?tab=readme-ov-file#credentials"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/aiclicks/n8n-nodes-aiclicks?tab=readme-ov-file"
+			}
+		]
+	}
+}

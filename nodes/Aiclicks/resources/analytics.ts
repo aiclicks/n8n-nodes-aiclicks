@@ -1,0 +1,67 @@
+import type { INodeProperties } from 'n8n-workflow';
+import { daysField, domainField, operationSelector, shownFor } from '../shared/fields';
+
+const operationsWithDays = [
+	'getVisibility',
+	'getMentions',
+	'getCitability',
+	'getCitationsTimeSeries',
+	'getCitations',
+	'getModelLeaderboard',
+];
+
+export const analyticsDescription: INodeProperties[] = [
+	operationSelector('analytics', [
+		{
+			name: 'Get Visibility',
+			value: 'getVisibility',
+			action: 'Get visibility time series',
+			description: 'Daily share of tracked AI answers that mention the brand',
+			url: '/api/v1/visibility-time-series',
+		},
+		{
+			name: 'Get Mentions',
+			value: 'getMentions',
+			action: 'Get mentions time series',
+			description: 'Daily count of AI answers naming the brand',
+			url: '/api/v1/mentions-time-series',
+		},
+		{
+			name: 'Get Citability',
+			value: 'getCitability',
+			action: 'Get citability time series',
+			description: "Daily score for how often the brand's URLs are cited, not just mentioned",
+			url: '/api/v1/citability-time-series',
+		},
+		{
+			name: 'Get Citations Time Series',
+			value: 'getCitationsTimeSeries',
+			action: 'Get citations time series',
+			description: "Daily count of the brand's URLs appearing in AI answers",
+			url: '/api/v1/citations-time-series',
+		},
+		{
+			name: 'Get Citations',
+			value: 'getCitations',
+			action: 'Get cited URLs',
+			description: 'URL-level citations across AI answers, sorted by frequency',
+			url: '/api/v1/citations',
+		},
+		{
+			name: 'Get Brand Rankings',
+			value: 'getBrandRankings',
+			action: 'Get brand rankings',
+			description: 'Current share-of-voice ranking of the brand against tracked competitors',
+			url: '/api/v1/brand-rankings',
+		},
+		{
+			name: 'Get Model Leaderboard',
+			value: 'getModelLeaderboard',
+			action: 'Get model leaderboard',
+			description: 'How often each AI model (ChatGPT, Perplexity, AI Overviews, ...) surfaces the brand',
+			url: '/api/v1/model-leaderboard',
+		},
+	]),
+	domainField({ show: { resource: ['analytics'] } }),
+	daysField(shownFor('analytics', operationsWithDays)),
+];

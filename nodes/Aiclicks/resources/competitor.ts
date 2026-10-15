@@ -1,0 +1,122 @@
+import type { INodeProperties } from 'n8n-workflow';
+import {
+	commaSeparatedToArray,
+	daysField,
+	domainField,
+	modelField,
+	operationSelector,
+	shownFor,
+} from '../shared/fields';
+
+const onAdd = shownFor('competitor', ['add']);
+const onGetMany = shownFor('competitor', ['getAll']);
+
+export const competitorDescription: INodeProperties[] = [
+	operationSelector('competitor', [
+		{
+			name: 'Get Many',
+			value: 'getAll',
+			action: 'Get many competitors',
+			description: 'List the competitors tracked for a domain',
+			url: '/api/v1/competitors',
+		},
+		{
+			name: 'Add',
+			value: 'add',
+			action: 'Add a competitor',
+			description: 'Track a new competitor for a domain',
+			url: '/api/v1/competitors',
+			method: 'POST',
+		},
+		{
+			name: 'Get Discovery',
+			value: 'getDiscovery',
+			action: 'Get untracked competitors',
+			description: 'Brands that appear next to yours in AI answers but are not tracked yet',
+			url: '/api/v1/competitor-discovery',
+		},
+		{
+			name: 'Get Time Series',
+			value: 'getTimeSeries',
+			action: 'Get competitor time series',
+			description: 'Daily visibility, share of voice and position for the brand and each tracked competitor',
+			url: '/api/v1/competitor-time-series',
+		},
+	]),
+	domainField(shownFor('competitor', ['getAll', 'getDiscovery', 'getTimeSeries'])),
+	domainField(onAdd, 'body'),
+	daysField(shownFor('competitor', ['getDiscovery', 'getTimeSeries'])),
+	modelField(shownFor('competitor', ['getTimeSeries'])),
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: onGetMany,
+		options: [
+			{
+				displayName: 'Active',
+				name: 'active',
+				type: 'boolean',
+				default: true,
+				description: 'Whether to return only active (true) or only inactive (false) competitors',
+				routing: { send: { type: 'query', property: 'active' } },
+			},
+			{
+				displayName: 'Dedicated',
+				name: 'isDedicated',
+				type: 'boolean',
+				default: true,
+				description: 'Whether to return only dedicated (tracked) competitors (true) or only discovered ones (false)',
+				routing: { send: { type: 'query', property: 'is_dedicated' } },
+			},
+		],
+	},
+	{
+		displayName: 'Competitor Website',
+		name: 'competitorDomain',
+		type: 'string',
+		required: true,
+		default: '',
+		placeholder: 'e.g. rival.com',
+		displayOptions: onAdd,
+		routing: { send: { type: 'body', property: 'competitor_domain' } },
+	},
+	{
+		displayName: 'Competitor Name',
+		name: 'competitorName',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: onAdd,
+		routing: { send: { type: 'body', property: 'competitor_name' } },
+	},
+	{
+		displayName: 'Dedicated',
+		name: 'isDedicated',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to actively track the competitor (counts against the plan limit) rather than add it as passive discovery',
+		displayOptions: onAdd,
+		routing: { send: { type: 'body', property: 'is_dedicated' } },
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: onAdd,
+		options: [
+			{
+				displayName: 'Name Variations',
+				name: 'variations',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated alternate names or spellings',
+				routing: { send: { type: 'body', property: 'competitor_variations', value: commaSeparatedToArray } },
+			},
+		],
+	},
+];
