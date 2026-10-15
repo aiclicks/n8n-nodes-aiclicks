@@ -38,7 +38,7 @@ export class AiclicksApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: 'https://api.aiclicks.com',
+			baseURL: 'https://api.aiclicks.io',
 			url: '/api/v1/validate',
 			method: 'GET',
 		},

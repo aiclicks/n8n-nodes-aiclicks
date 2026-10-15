@@ -27,7 +27,7 @@ export async function getDomains(
 ): Promise<INodeListSearchResult> {
 	const response = (await this.helpers.httpRequestWithAuthentication.call(this, 'aiclicksApi', {
 		method: 'GET',
-		url: 'https://api.aiclicks.com/api/v1/domains',
+		url: 'https://api.aiclicks.io/api/v1/domains',
 		json: true,
 	})) as DomainsResponse;
 

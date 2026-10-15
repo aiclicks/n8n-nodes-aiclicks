@@ -24,7 +24,7 @@ export class Aiclicks implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [{ name: 'aiclicksApi', required: true }],
 		requestDefaults: {
-			baseURL: 'https://api.aiclicks.com',
+			baseURL: 'https://api.aiclicks.io',
 			headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
 		},
 		properties: [
