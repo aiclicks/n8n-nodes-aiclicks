@@ -1,5 +1,5 @@
 {
-	"node": "n8n-nodes-aiclicks",
+	"node": "n8n-nodes-aiclicks.aiclicks",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": ["Analytics", "Marketing & Content"],
