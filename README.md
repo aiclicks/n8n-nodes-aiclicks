@@ -33,14 +33,20 @@ Write operations (Domain → Create, Prompt → Add, Competitor → Add) need a 
 Most operations take a **Domain** (pick from the list or paste its ID) and **Days**, a trailing window of 1-365 days.
 
 - **Get Many** operations have **Return All** and **Limit**. Prompt → Get Many pages through every prompt when Return All is on.
+- Other long lists (Prompt → Get Metrics and Get Answers, Sentiment → Get Answers, Brand Metric → Get Citation Domains and Get Engage Recommendations) return one page at a time. Set **Page** and **Page Size** under **Options**, where you also find sorting and filters.
+- **Get Citations** has **Filters**: **Brand-Owned Pages** (only your own pages, or only third-party ones) and **Page Mentions Brand** (only cited pages that name your brand, or only those that don't, a ready-made outreach list).
 - List-shaped results (time series, citations, rankings, themes, GA4 breakdowns) come out as one n8n item per row, ready for Google Sheets or a Loop node. An empty result produces no items; turn on the node's **Always Output Data** setting if later steps must still run.
-- **Simplify** (on by default) trims wide responses (Get Citations, Competitor → Get Time Series) to their 10 most useful fields. Turn it off for the raw response.
+- **Simplify** (on by default) trims wide responses (Get Citations, Competitor → Get Time Series) to their most useful fields, including whether each cited page mentions your brand and which competitors it names. Turn it off for the raw response.
 - With a master key, Domain → Get Many returns every domain across your teams, each tagged with `team_name`.
+- Write operations take IDs: prompt IDs from Prompt → Get Many, tag and topic IDs from Get Tags / Get Topics (or Create Tag / Create Topic), competitor IDs from Competitor → Get Many. Fields that take several IDs accept a comma-separated list.
+- **Add Many** takes one prompt per line, or one competitor per line as `website, name`. Competitor → Add Many can instead track the top N brands from Get Discovery.
+- **Domain → Create** has a **Pitch Brand** option: a 7-day brand for pitching a prospect, for agency teams on Pro or higher. It uses a pitch credit instead of a brand slot.
 
 ## Usage
 
 - **Weekly report:** Schedule Trigger → AIclicks (Brand Metric → Get Visibility) → Slack.
 - **AI Agent:** add AIclicks as a tool on an AI Agent node, and let the agent pick the resource and operation.
+- **Outreach list:** Brand Metric → Get Citations with **Page Mentions Brand** off → Google Sheets, to list pages AI cites that don't name you yet.
 - New prompts and competitors can take up to about 30 minutes to appear in the AIclicks dashboard.
 
 ## Resources
