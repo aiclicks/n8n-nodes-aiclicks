@@ -1,6 +1,6 @@
 # n8n-nodes-aiclicks
 
-An [n8n](https://n8n.io/) community node for [AIclicks](https://aiclicks.io). Use it to pull brand visibility, citations, sentiment, competitor, ChatGPT ads and GA4 AI-traffic data into your workflows, or to add prompts and competitors to track.
+The verified [n8n](https://n8n.io/) node for [AIclicks](https://aiclicks.io), listed on [n8n's integrations page](https://n8n.io/integrations/aiclicks/). Use it to pull brand visibility, citations, sentiment, competitor, ChatGPT ads and GA4 AI-traffic data into your workflows, or to add prompts and competitors to track.
 
 The node is also usable as a tool by n8n's **AI Agent**, so an agent can answer questions such as "how did our visibility on Perplexity change this month?" on its own.
 
@@ -8,14 +8,14 @@ The node is also usable as a tool by n8n's **AI Agent**, so an agent can answer 
 
 ## Installation
 
-In n8n, go to **Settings → Community Nodes → Install** and enter `n8n-nodes-aiclicks`. See the [community nodes installation guide](https://docs.n8n.io/integrations/community-nodes/installation/).
+In the n8n editor, open the nodes panel and search for **AIclicks**. An instance owner or admin installs it once, and then everyone on the instance can use it. This works on n8n Cloud and self-hosted n8n.
 
 ## Credentials
 
 1. In AIclicks, open **Settings → Developers** and create an API key (`ak_live_...`). A team key reads one team's brands; a master key reads every team you belong to.
 2. In n8n, create an **AIclicks API** credential and paste the key. n8n checks it against `/api/v1/validate`.
 
-Write operations (Domain → Create, Prompt → Add, Competitor → Add) need a Pro plan or higher and membership of the brand's team.
+Write operations (creating brands, adding, updating and archiving prompts, tags, topics and competitors) need a Pro plan or higher and membership of the brand's team.
 
 ## Operations
 
@@ -53,7 +53,7 @@ Most operations take a **Domain** (pick from the list or paste its ID) and **Day
 
 - [AIclicks](https://aiclicks.io)
 - [AIclicks API documentation](https://docs.aiclicks.io)
-- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [AIclicks on n8n](https://n8n.io/integrations/aiclicks/)
 
 ## Version history
 
