@@ -60,6 +60,8 @@ export const analyticsDescription: INodeProperties[] = [
 					'page_title',
 					'page_type',
 					'is_brand_owned',
+					'mentioned',
+					'competitors',
 					'frequency',
 					'mentions',
 					'prompt_count',
@@ -86,4 +88,32 @@ export const analyticsDescription: INodeProperties[] = [
 	domainField({ show: { resource: ['analytics'] } }),
 	daysField(shownFor('analytics', operationsWithDays)),
 	simplifyField(shownFor('analytics', ['getCitations'])),
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: shownFor('analytics', ['getCitations']),
+		options: [
+			{
+				displayName: 'Brand-Owned Pages',
+				name: 'isBrandOwned',
+				type: 'boolean',
+				default: true,
+				description:
+					"Whether to return only the brand's own pages (true) or only third-party pages (false)",
+				routing: { send: { type: 'query', property: 'is_brand_owned' } },
+			},
+			{
+				displayName: 'Page Mentions Brand',
+				name: 'mentioned',
+				type: 'boolean',
+				default: false,
+				description:
+					'Whether to return only cited pages that name the brand (true) or only pages that do not, including pages not scraped yet (false)',
+				routing: { send: { type: 'query', property: 'mentioned' } },
+			},
+		],
+	},
 ];

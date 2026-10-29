@@ -96,6 +96,15 @@ export const domainDescription: INodeProperties[] = [
 				placeholder: 'e.g. US',
 				routing: { send: { type: 'body', property: 'country' } },
 			},
+			{
+				displayName: 'Pitch Brand',
+				name: 'isPitch',
+				type: 'boolean',
+				default: false,
+				description:
+					'Whether to create a 7-day pitch brand for a prospect. Agency teams on Pro or higher only; uses a pitch credit instead of a brand slot and allows at most 25 prompts.',
+				routing: { send: { type: 'body', property: 'is_pitch' } },
+			},
 		],
 	},
 ];
