@@ -60,3 +60,4 @@ Most operations take a **Domain** (pick from the list or paste its ID) and **Day
 - 0.1.0: first release.
 - 0.2.0: 21 new operations (prompt metrics and answers, bulk prompt and competitor writes, tags and topics, citation domains and share, topic and tag metrics, engage recommendations, domain status, team usage), citation filters for brand-owned pages and page mentions, and pitch brands on Domain → Create.
 - 0.2.1: README notes for the 0.2.0 operations.
+- 0.2.2: README describes the verified node and links the n8n listing.

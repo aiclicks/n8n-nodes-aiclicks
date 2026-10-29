@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-aiclicks",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "n8n node for aiclicks: brand visibility, citations, sentiment and AI traffic across AI search engines",
 	"license": "MIT",
 	"homepage": "https://aiclicks.io",
