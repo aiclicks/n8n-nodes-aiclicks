@@ -1,8 +1,10 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
 	commaSeparatedToArray,
+	competitorLinesToObjects,
 	daysField,
 	domainField,
+	idField,
 	limitField,
 	modelField,
 	operationSelector,
@@ -13,6 +15,8 @@ import {
 } from '../shared/fields';
 
 const onAdd = shownFor('competitor', ['add']);
+const onAddMany = shownFor('competitor', ['addMany']);
+const onUpdate = shownFor('competitor', ['update']);
 const onGetMany = shownFor('competitor', ['getAll']);
 
 export const competitorDescription: INodeProperties[] = [
@@ -60,9 +64,95 @@ export const competitorDescription: INodeProperties[] = [
 				]),
 			],
 		},
+		{
+			name: 'Add Many',
+			value: 'addMany',
+			action: 'Add many competitors',
+			description: 'Track up to 50 competitors in one call, from a list or from discovery',
+			url: '/api/v1/competitors/bulk',
+			method: 'POST',
+		},
+		{
+			name: 'Update',
+			value: 'update',
+			action: 'Update a competitor',
+			description: 'Rename a tracked competitor, replace its name variations, or change its tracking status',
+			url: '/api/v1/competitors/update',
+			method: 'POST',
+		},
 	]),
 	domainField(shownFor('competitor', ['getAll', 'getDiscovery', 'getTimeSeries'])),
-	domainField(onAdd, 'body'),
+	domainField(shownFor('competitor', ['add', 'addMany']), 'body'),
+	idField('Competitor ID', 'competitorId', 'competitor_id', onUpdate, 'body'),
+	{
+		displayName: 'Competitors',
+		name: 'competitors',
+		type: 'string',
+		typeOptions: { rows: 5 },
+		default: '',
+		placeholder: 'rival.com, Rival',
+		description:
+			'One competitor per line as "website, name" (max 50). Leave empty and set From Discovery to track the top discovered brands instead.',
+		displayOptions: onAddMany,
+		routing: {
+			send: {
+				type: 'body',
+				property: 'competitors',
+				value: competitorLinesToObjects,
+			},
+		},
+	},
+	{
+		displayName: 'From Discovery',
+		name: 'fromDiscovery',
+		type: 'number',
+		typeOptions: { minValue: 0, maxValue: 50 },
+		default: 0,
+		description: 'Instead of a list, track the top N brands from Get Discovery. 0 uses the list above.',
+		displayOptions: onAddMany,
+		routing: { send: { type: 'body', property: 'from_discovery', value: '={{$value || undefined}}' } },
+	},
+	{
+		displayName: 'Update Fields',
+		name: 'updateFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: onUpdate,
+		options: [
+			{
+				displayName: 'Active',
+				name: 'active',
+				type: 'boolean',
+				default: true,
+				description: 'Whether the competitor is analyzed',
+				routing: { send: { type: 'body', property: 'active' } },
+			},
+			{
+				displayName: 'Dedicated',
+				name: 'isDedicated',
+				type: 'boolean',
+				default: true,
+				description: 'Whether the competitor is actively tracked (counts against the plan limit)',
+				routing: { send: { type: 'body', property: 'is_dedicated' } },
+			},
+			{
+				displayName: 'Name',
+				name: 'competitorName',
+				type: 'string',
+				default: '',
+				routing: { send: { type: 'body', property: 'competitor_name' } },
+			},
+			{
+				displayName: 'Name Variations',
+				name: 'variations',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated alternate names; replaces the current list',
+				routing: { send: { type: 'body', property: 'competitor_variations', value: commaSeparatedToArray } },
+			},
+		],
+	},
 	daysField(shownFor('competitor', ['getDiscovery', 'getTimeSeries'])),
 	modelField(shownFor('competitor', ['getTimeSeries'])),
 	simplifyField(shownFor('competitor', ['getTimeSeries'])),

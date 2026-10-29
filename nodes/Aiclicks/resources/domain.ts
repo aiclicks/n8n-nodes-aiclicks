@@ -1,6 +1,13 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { flattenDomainItems } from '../shared/domains';
-import { limitField, operationSelector, returnAllField, shownFor } from '../shared/fields';
+import {
+	domainField,
+	limitField,
+	operationSelector,
+	promptLinesToObjects,
+	returnAllField,
+	shownFor,
+} from '../shared/fields';
 
 const onCreate = shownFor('domain', ['create']);
 const onGetMany = shownFor('domain', ['getAll']);
@@ -23,7 +30,15 @@ export const domainDescription: INodeProperties[] = [
 			url: '/api/v1/domains',
 			method: 'POST',
 		},
+		{
+			name: 'Get Status',
+			value: 'getStatus',
+			action: 'Get domain status',
+			description: "Where a domain's analysis stands, e.g. whether the first run has finished",
+			url: '/api/v1/domain-status',
+		},
 	]),
+	domainField(shownFor('domain', ['getStatus'])),
 	returnAllField(onGetMany),
 	limitField(onGetMany),
 	{
@@ -67,7 +82,7 @@ export const domainDescription: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'prompts',
-				value: '={{$value.split("\\n").map(line => line.trim()).filter(Boolean).map(text => ({ text }))}}',
+				value: promptLinesToObjects,
 			},
 		},
 	},

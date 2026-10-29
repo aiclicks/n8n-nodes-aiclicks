@@ -21,14 +21,14 @@ Write operations (Domain → Create, Prompt → Add, Competitor → Add) need a 
 
 | Resource | Operations |
 |---|---|
-| Account | Validate Key |
-| Brand Metric | Get Visibility, Get Mentions, Get Citability, Get Citations Time Series, Get Citations, Get Brand Rankings, Get Model Leaderboard |
+| Account | Validate Key, Get Team Usage |
+| Brand Metric | Get Visibility, Get Mentions, Get Citability, Get Citations Time Series, Get Citations, Get Brand Rankings, Get Model Leaderboard, Get Citation Domains, Get Competitor Citations, Get Citation Share, Get Topic Metrics, Get Tag Metrics, Get Engage Recommendations |
 | ChatGPT Ad | Get KPIs, Get Leaderboard, Get Timeline, Get Prompts, Get Cards |
-| Competitor | Get Many, Add, Get Discovery, Get Time Series |
-| Domain | Get Many, Create |
+| Competitor | Get Many, Add, Get Discovery, Get Time Series, Add Many, Update |
+| Domain | Get Many, Create, Get Status |
 | GA4 AI Traffic | Get Summary, Get by LLM, Get Timeline, Get Top Pages, Get Top Locations, Get Top Browsers, Get Devices, Get Key Events |
-| Prompt | Get Many, Add, Get Statistics, Get Fanout Queries, Get Tags, Get Topics |
-| Sentiment | Get Overview, Get Time Series, Get Themes, Get Theme Sources |
+| Prompt | Get Many, Add, Get Statistics, Get Fanout Queries, Get Tags, Get Topics, Get Metrics, Get Brands, Get Answers, Add Many, Update, Archive, Set Tags, Set Topics, Create Tag, Create Topic |
+| Sentiment | Get Overview, Get Time Series, Get Themes, Get Theme Sources, Get Answers |
 
 Most operations take a **Domain** (pick from the list or paste its ID) and **Days**, a trailing window of 1-365 days.
 

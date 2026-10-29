@@ -163,4 +163,98 @@ export function modelField(displayOptions: IDisplayOptions): INodeProperties {
 	};
 }
 
+export const promptLinesToObjects =
+	'={{$value.split("\\n").map(line => line.trim()).filter(Boolean).map(text => ({ text }))}}';
+
+export const competitorLinesToObjects =
+	'={{$value.split("\\n").map(line => line.split(",").map(part => part.trim())).filter(([website]) => website).map(([website, ...name]) => ({ competitor_domain: website, competitor_name: name.join(", ") || website }))}}';
+
 export const commaSeparatedToArray = '={{$value.split(",").map(entry => entry.trim()).filter(Boolean)}}';
+
+export function idField(
+	displayName: string,
+	name: string,
+	property: string,
+	displayOptions: IDisplayOptions,
+	sendIn: 'query' | 'body' = 'query',
+): INodeProperties {
+	return {
+		displayName,
+		name,
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions,
+		routing: { send: { type: sendIn, property } },
+	};
+}
+
+export function idListField(
+	displayName: string,
+	name: string,
+	property: string,
+	displayOptions: IDisplayOptions,
+	description: string,
+	required = true,
+): INodeProperties {
+	return {
+		displayName,
+		name,
+		type: 'string',
+		required,
+		default: '',
+		description: `${description}, comma-separated`,
+		displayOptions,
+		routing: { send: { type: 'body', property, value: commaSeparatedToArray } },
+	};
+}
+
+export function pageOptions(
+	displayOptions: IDisplayOptions,
+	maxPageSize: number,
+	extraOptions: INodeProperties[] = [],
+): INodeProperties {
+	return {
+		displayName: 'Options',
+		name: 'options',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions,
+		options: [
+			{
+				displayName: 'Page',
+				name: 'page',
+				type: 'number',
+				typeOptions: { minValue: 1 },
+				default: 1,
+				description: '1-indexed page of results',
+				routing: { send: { type: 'query', property: 'page' } },
+			},
+			{
+				displayName: 'Page Size',
+				name: 'size',
+				type: 'number',
+				typeOptions: { minValue: 1, maxValue: maxPageSize },
+				default: maxPageSize,
+				description: `Rows per page (max ${maxPageSize})`,
+				routing: { send: { type: 'query', property: 'size' } },
+			},
+			...extraOptions,
+		],
+	};
+}
+
+export function sortDirectionOption(): INodeProperties {
+	return {
+		displayName: 'Sort Direction',
+		name: 'sortDir',
+		type: 'options',
+		options: [
+			{ name: 'Descending', value: 'desc' },
+			{ name: 'Ascending', value: 'asc' },
+		],
+		default: 'desc',
+		routing: { send: { type: 'query', property: 'sort_dir' } },
+	};
+}
