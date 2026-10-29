@@ -46,7 +46,7 @@ Most operations take a **Domain** (pick from the list or paste its ID) and **Day
 
 - **Weekly report:** Schedule Trigger → AIclicks (Brand Metric → Get Visibility) → Slack.
 - **AI Agent:** add AIclicks as a tool on an AI Agent node, and let the agent pick the resource and operation.
-- **Outreach list:** Brand Metric → Get Citations with **Page Mentions Brand** off → Google Sheets, to list pages AI cites that don't name you yet.
+- **Outreach list:** Brand Metric → Get Citations with the **Page Mentions Brand** filter added and switched off → Google Sheets, to list pages AI cites that don't name you yet.
 - New prompts and competitors can take up to about 30 minutes to appear in the AIclicks dashboard.
 
 ## Resources
