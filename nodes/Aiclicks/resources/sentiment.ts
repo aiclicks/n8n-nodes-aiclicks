@@ -1,7 +1,16 @@
 import type { INodeProperties } from 'n8n-workflow';
-import { daysField, domainField, modelField, operationSelector } from '../shared/fields';
+import {
+	daysField,
+	domainField,
+	idField,
+	modelField,
+	operationSelector,
+	pageOptions,
+	shownFor,
+} from '../shared/fields';
 
 const onSentiment = { show: { resource: ['sentiment'] } };
+const onGetAnswers = shownFor('sentiment', ['getAnswers']);
 
 export const sentimentDescription: INodeProperties[] = [
 	operationSelector('sentiment', [
@@ -33,8 +42,17 @@ export const sentimentDescription: INodeProperties[] = [
 			description: 'URLs cited when AI answers raise sentiment themes about the brand',
 			url: '/api/v1/sentiment/theme-sources',
 		},
+		{
+			name: 'Get Answers',
+			value: 'getAnswers',
+			action: 'Get answers for a theme',
+			description: 'The AI answers behind one sentiment theme',
+			url: '/api/v1/sentiment/answers',
+		},
 	]),
 	domainField(onSentiment),
-	daysField(onSentiment),
+	daysField(shownFor('sentiment', ['getOverview', 'getTimeSeries', 'getThemes', 'getThemeSources'])),
 	modelField(onSentiment),
+	idField('Theme ID', 'themeId', 'theme_id', onGetAnswers),
+	pageOptions(onGetAnswers, 100),
 ];

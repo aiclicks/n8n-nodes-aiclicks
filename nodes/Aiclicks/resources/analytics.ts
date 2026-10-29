@@ -2,10 +2,13 @@ import type { INodeProperties } from 'n8n-workflow';
 import {
 	daysField,
 	domainField,
+	modelField,
 	operationSelector,
+	pageOptions,
 	shownFor,
 	simplifyField,
 	simplifyTo,
+	sortDirectionOption,
 } from '../shared/fields';
 
 const operationsWithDays = [
@@ -15,7 +18,14 @@ const operationsWithDays = [
 	'getCitationsTimeSeries',
 	'getCitations',
 	'getModelLeaderboard',
+	'getCitationDomains',
+	'getCompetitorCitations',
+	'getCitationShare',
+	'getTopicMetrics',
+	'getTagMetrics',
 ];
+
+const operationsWithModel = ['getCompetitorCitations', 'getCitationShare', 'getTopicMetrics', 'getTagMetrics'];
 
 export const analyticsDescription: INodeProperties[] = [
 	operationSelector('analytics', [
@@ -84,9 +94,101 @@ export const analyticsDescription: INodeProperties[] = [
 			description: 'How often each AI model (ChatGPT, Perplexity, AI Overviews, ...) surfaces the brand',
 			url: '/api/v1/model-leaderboard',
 		},
+		{
+			name: 'Get Citation Domains',
+			value: 'getCitationDomains',
+			action: 'Get cited domains',
+			description: 'Domains cited in AI answers to the tracked prompts, with ownership (own, competitor, third-party)',
+			url: '/api/v1/citation-domains',
+		},
+		{
+			name: 'Get Competitor Citations',
+			value: 'getCompetitorCitations',
+			action: 'Get competitor citations',
+			description: "How often AI answers cite the brand's website and each competitor's",
+			url: '/api/v1/competitor-citations',
+		},
+		{
+			name: 'Get Citation Share',
+			value: 'getCitationShare',
+			action: 'Get citation share',
+			description: "Each brand's share of citations within every topic or tag",
+			url: '/api/v1/citation-share',
+		},
+		{
+			name: 'Get Topic Metrics',
+			value: 'getTopicMetrics',
+			action: 'Get topic metrics',
+			description: 'Visibility, mentions, citations and position per topic',
+			url: '/api/v1/topic-metrics',
+		},
+		{
+			name: 'Get Tag Metrics',
+			value: 'getTagMetrics',
+			action: 'Get tag metrics',
+			description: 'Visibility, mentions, citations and position per tag',
+			url: '/api/v1/tag-metrics',
+		},
+		{
+			name: 'Get Engage Recommendations',
+			value: 'getEngageRecommendations',
+			action: 'Get engage recommendations',
+			description: 'Community threads and posts that AI answers lean on, worth engaging in',
+			url: '/api/v1/engage-recommendations',
+		},
 	]),
 	domainField({ show: { resource: ['analytics'] } }),
 	daysField(shownFor('analytics', operationsWithDays)),
+	modelField(shownFor('analytics', operationsWithModel)),
+	{
+		displayName: 'Group By',
+		name: 'groupBy',
+		type: 'options',
+		options: [
+			{ name: 'Topic', value: 'topic' },
+			{ name: 'Tag', value: 'tag' },
+		],
+		default: 'topic',
+		displayOptions: shownFor('analytics', ['getCitationShare']),
+		routing: { send: { type: 'query', property: 'group_by' } },
+	},
+	pageOptions(shownFor('analytics', ['getCitationDomains']), 100),
+	pageOptions(shownFor('analytics', ['getEngageRecommendations']), 100, [
+		{
+			displayName: 'Platform',
+			name: 'platform',
+			type: 'string',
+			default: '',
+			placeholder: 'e.g. reddit',
+			description: 'Only one platform, e.g. reddit, x, linkedin, facebook, instagram or quora',
+			routing: { send: { type: 'query', property: 'platform' } },
+		},
+		{
+			displayName: 'Status',
+			name: 'status',
+			type: 'options',
+			options: [
+				{ name: 'Dismissed', value: 'dismissed' },
+				{ name: 'Done', value: 'done' },
+				{ name: 'Pending', value: 'pending' },
+			],
+			default: 'pending',
+			routing: { send: { type: 'query', property: 'status' } },
+		},
+		{
+			displayName: 'Sort By',
+			name: 'sortBy',
+			type: 'options',
+			options: [
+				{ name: 'Comments', value: 'comments' },
+				{ name: 'Engagement', value: 'engagement' },
+				{ name: 'Frequency', value: 'frequency' },
+			],
+			default: 'frequency',
+			routing: { send: { type: 'query', property: 'sort_by' } },
+		},
+		sortDirectionOption(),
+	]),
 	simplifyField(shownFor('analytics', ['getCitations'])),
 	{
 		displayName: 'Filters',
